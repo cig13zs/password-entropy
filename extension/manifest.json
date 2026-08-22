@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Password-entropy \u2014 Calculate password entropy bits and brut",
+  "name": "Password Entropy",
   "version": "1.0.0",
-  "description": "Calculate password entropy bits and brute-force crack times offline without sending passwords.",
+  "description": "Calculate bit-level password entropy and brute-force resistance offline.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -11,6 +11,6 @@
   "permissions": [],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Password-entropy"
+    "default_title": "Password Entropy"
   }
 }
