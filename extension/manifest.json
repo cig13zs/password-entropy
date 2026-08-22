@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Password Entropy",
   "version": "1.0.0",
-  "description": "Calculate bit-level password entropy and brute-force resistance offline.",
+  "description": "Check password length and obvious patterns locally without claiming a crack-time prediction.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
