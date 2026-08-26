@@ -16,6 +16,7 @@
     button.secondary { background: #27272a; color: #d4d4d8; }
     button.secondary:hover { background: #3f3f46; }
     .stats { font-size: 11px; color: #71717a; margin-top: 4px; }
+    .note { font-size: 10px; line-height: 1.4; color: #a1a1aa; margin: 7px 0 0; }
     .footer { margin-top: 10px; border-top: 1px solid #27272a; padding-top: 8px; font-size: 11px; color: #a1a1aa; display: flex; justify-content: space-between; }
     a { color: #60a5fa; text-decoration: none; }
 
@@ -24,14 +25,15 @@
 </head>
 <body>
   <h1><span>Password Entropy</span> <span class="badge">100% Offline</span></h1>
-  <textarea id="input" placeholder="Paste input here..."></textarea>
+  <textarea id="input" placeholder="Enter a password to inspect locally..."></textarea>
   <div class="btn-row">
     <button type="button" id="btn-run">Process</button>
     <button type="button" id="btn-sample" class="secondary">Sample</button>
     <button type="button" id="btn-copy" class="secondary">Copy</button>
   </div>
-  <textarea id="output" readonly placeholder="Output appears here..."></textarea>
+  <textarea id="output" readonly placeholder="Entropy report appears here..."></textarea>
   <div id="stats" role="status" aria-live="polite" class="stats">Ready</div>
+  <p class="note">The bit score is a character-pool estimate, not a crack-time prediction.</p>
   <div class="footer">
     <span>Zero tracking, offline</span>
     <a href="https://cig13zs.github.io/password-entropy/" target="_blank" rel="noopener noreferrer">Full Web App ↗</a>

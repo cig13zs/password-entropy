@@ -1,6 +1,6 @@
-# Password Pattern Check | Local Upper-Bound Estimate
+# Password Entropy | Character-Pool Strength
 
-> Check password length, character variety, and obvious repeated or common patterns locally. The bit count is an upper bound, not measured entropy.
+> Calculate a character-pool password entropy estimate in bits from password length and character variety, then view a strength band. Everything runs locally. The score does not predict real-world cracking time.
 
 [![Live Web App](https://img.shields.io/badge/Web_App-Live_Demo-3B82F6?style=flat-square)](https://cig13zs.github.io/password-entropy/)
 [![Chrome Extension](https://img.shields.io/badge/Chrome_Extension-Manifest_V3-10B981?style=flat-square)](https://github.com/cig13zs/password-entropy/releases)
@@ -12,18 +12,20 @@
 
 ## Features
 
-- **100% Client-Side & Offline:** Pure vanilla JavaScript runtime. Zero network uploads, zero telemetry, zero analytics tracking.
-- **Instant Processing:** Zero dependencies or heavy frameworks for ultra-fast, lightweight execution.
-- **Dual Delivery:** Use directly in your browser at [https://cig13zs.github.io/password-entropy/](https://cig13zs.github.io/password-entropy/) or install the offline Chrome Extension package.
-- **Automated Test Suite:** Backed by unit tests (`node core.test.js`) ensuring reliable and accurate execution.
-
----
+- **Bit-level score:** Uses `length x log2(character pool size)` to produce a one-decimal bit score.
+- **Strength bands:** Maps the score to Very Weak, Weak, Moderate, Strong, or Very Strong.
+- **Pattern warnings:** Flags a small set of obvious repeated, common, keyboard, and sequence patterns.
+- **Local and offline:** The password stays in the browser or extension runtime. No password text is uploaded.
+- **Web app and extension:** Use the standalone page or load the `extension/` folder in Chrome.
+- **Tests:** Run the Node.js unit and page checks locally.
 
 ## How it works
 
-Type a password to calculate its character pool size, entropy in bits, NIST strength tier, and theoretical brute-force combinations.
+The calculator builds a character pool from the classes present in the password: 26 lowercase letters, 26 uppercase letters, 10 digits, and 33 other ASCII characters. It then calculates `length x log2(character pool size)` and maps that result to a strength band.
 
----
+The formula assumes that every character in the detected pool is equally likely. Passwords chosen by people often contain words, repetitions, sequences, or patterns, so the result is a character-pool estimate and upper bound. It is not measured entropy and does not predict real-world cracking time.
+
+The checker also reports a few obvious local patterns. Those warnings are hints for review, not a complete password audit.
 
 ## Install the extension
 
@@ -34,24 +36,37 @@ Type a password to calculate its character pool size, entropy in bits, NIST stre
 2. Open Google Chrome and navigate to `chrome://extensions/`.
 3. Enable **Developer mode** in the top right toggle.
 4. Click **Load unpacked** and select the `extension/` folder inside this repository.
-5. The extension will be available in your browser toolbar, working 100% offline.
+5. The extension will be available in your browser toolbar and will work offline.
 
----
+## Run the tests
+
+```bash
+node core.test.js
+node site.test.js
+```
 
 ## FAQ
 
+### What does the bit score mean?
+
+It is the character-pool estimate described above. The score is based on password length and the character classes detected in the input. It is an upper bound under a uniform-random selection assumption, not measured entropy.
+
+### Does this predict real-world cracking time?
+
+No. The tool reports a bit score, a strength band, and a few local pattern warnings. It does not model password choice, breach data, dictionaries, hash algorithms, attacker hardware, rate limits, or attack strategy, so it does not provide a crack-time forecast.
+
 ### Is my data uploaded to any server?
-No. Everything executes locally inside your browser memory or extension sandbox. No telemetry, third-party scripts, or API requests are made.
+
+No. The calculation runs locally inside your browser memory or extension sandbox. Password text is not sent to a server, and the project includes no analytics or tracking scripts.
 
 ### Can I use the core library in Node.js or JavaScript projects?
-Yes! The core engine in `core.js` is exported as a standard Universal Module Definition (UMD), compatible with Node.js `require()`, ES modules, and browser `<script>` tags:
+
+Yes. The core engine in `core.js` is exported as a standard Universal Module Definition (UMD), compatible with Node.js `require()`, ES modules, and browser `<script>` tags:
 
 ```javascript
 const engine = require('./core');
 // Use the core functions directly in your project
 ```
-
----
 
 ## License and support
 

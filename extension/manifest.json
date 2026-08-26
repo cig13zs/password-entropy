@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Password Entropy",
   "version": "1.0.0",
-  "description": "Check password length and obvious patterns locally without claiming a crack-time prediction.",
+  "description": "Calculate a local character-pool entropy estimate in bits and show a strength band. No real-world crack-time predictions.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",

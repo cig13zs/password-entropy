@@ -4,33 +4,33 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🔑</text></svg>">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Password Pattern Check | Local Upper-Bound Estimate</title>
-  <meta name="description" content="Check password length, character variety, and obvious repeated or common patterns locally. The bit count is an upper bound, not measured entropy.">
-  <meta name="keywords" content="password entropy calculator, calculate password strength bits, brute force crack time estimator, nist password entropy tool">
+  <title>Password Entropy | Character-Pool Strength</title>
+  <meta name="description" content="Calculate a character-pool password entropy estimate in bits from length and character variety, with strength bands. Runs locally and does not predict real-world cracking time.">
+  <meta name="keywords" content="password entropy calculator, password strength bits, character pool entropy, password strength bands, local password checker">
   <meta name="author" content="jju1s">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://cig13zs.github.io/password-entropy/">
 
   <!-- OpenGraph Metadata -->
-  <meta property="og:title" content="Password Pattern Check | Local Upper-Bound Estimate">
-  <meta property="og:description" content="Check password length, character variety, and obvious repeated or common patterns locally. The bit count is an upper bound, not measured entropy.">
+  <meta property="og:title" content="Password Entropy | Character-Pool Strength">
+  <meta property="og:description" content="Calculate a character-pool password entropy estimate in bits from length and character variety, with strength bands. Runs locally and does not predict real-world cracking time.">
   <meta property="og:url" content="https://cig13zs.github.io/password-entropy/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="jju1s Developer Tools">
 
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Password Pattern Check | Local Upper-Bound Estimate">
-  <meta name="twitter:description" content="Check password length, character variety, and obvious repeated or common patterns locally. The bit count is an upper bound, not measured entropy.">
+  <meta name="twitter:title" content="Password Entropy | Character-Pool Strength">
+  <meta name="twitter:description" content="Calculate a character-pool password entropy estimate in bits from length and character variety, with strength bands. Runs locally and does not predict real-world cracking time.">
 
   <!-- JSON-LD Structured Data Schema -->
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Password Entropy",
+  "name": "Password Entropy Calculator",
   "url": "https://cig13zs.github.io/password-entropy/",
-  "description": "Check password length, character variety, and obvious repeated or common patterns locally. The bit count is an upper bound, not measured entropy.",
+  "description": "Calculate a character-pool password entropy estimate in bits from length and character variety, with strength bands. Runs locally and does not predict real-world cracking time.",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "All",
   "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -53,26 +53,42 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "How do I use Password Entropy?",
+      "name": "What does the bit score mean?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Type a password to calculate its character pool size, entropy in bits, NIST strength tier, and theoretical brute-force combinations."
+        "text": "Password Entropy calculates length x log2(character pool size) from the character classes present. It maps that character-pool estimate to a strength band; it is not measured entropy."
       }
     },
     {
       "@type": "Question",
-      "name": "Is Password Entropy completely free and private?",
+      "name": "Does this predict real-world cracking time?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes, Password Entropy runs 100% client-side in your web browser. No data, files, or text are ever sent to any remote server."
+        "text": "No. Password Entropy reports a character-pool estimate and strength band. It does not predict real-world cracking time or account for password choice, breach data, hash algorithms, attacker hardware, or rate limits."
       }
     },
     {
       "@type": "Question",
-      "name": "Can I use Password Entropy offline?",
+      "name": "Is my data private and secure?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. You can install the pre-packaged Chrome Extension version or save this page to your local device to use it offline without internet connectivity."
+        "text": "Yes. All operations run 100% inside your local web browser using client-side JavaScript. No text, tokens, code, or personal data are uploaded to an external server."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I run this tool completely offline?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You can install the packaged Manifest V3 Chrome Extension version or save this standalone HTML page locally to use without an internet connection."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this tool free and open source?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The project is free, open source, and licensed under the MIT license."
       }
     }
   ]
@@ -125,7 +141,7 @@
     <header>
       <div>
         <h1>Password Entropy</h1>
-        <p class="desc">Check password length, character variety, and obvious repeated or common patterns locally. The bit count is an upper bound, not measured entropy.</p>
+        <p class="desc">Calculate a character-pool password entropy estimate in bits from length and character variety, with strength bands. Runs locally and does not predict real-world cracking time.</p>
       </div>
       <div class="badges">
         <span class="badge">100% Client-Side / Offline</span>
@@ -142,7 +158,7 @@
             <button type="button" id="btn-clear" class="secondary">Clear</button>
           </div>
         </div>
-        <textarea id="input" placeholder="Paste input here..."></textarea>
+        <textarea id="input" placeholder="Enter a password to inspect locally..."></textarea>
         <div class="info-bar">
           <span id="input-stats">Ready</span>
           <button type="button" id="btn-run">Process</button>
@@ -166,22 +182,31 @@
     <div class="seo-content">
       <div class="seo-card">
         <h2>How It Works</h2>
-        <p>Type a password to calculate its character pool size, entropy in bits, NIST strength tier, and theoretical brute-force combinations.</p>
+        <p>Enter a password to calculate its character pool size and a character-pool entropy estimate in bits. The score uses length x log2(character pool size) and maps the result to a strength band.</p>
+        <p>It assumes characters are selected uniformly from the detected pool, so it is an upper-bound estimate. It is not measured entropy and does not predict real-world cracking time. The tool also flags a few obvious repeated, common, or sequence patterns.</p>
       </div>
 
       <div class="seo-card">
         <h2>Frequently Asked Questions</h2>
         <details open>
+          <summary>What does the bit score mean?</summary>
+          <p>Password Entropy calculates length x log2(character pool size) from the character classes present. It maps that character-pool estimate to a strength band; it is not measured entropy.</p>
+        </details>
+        <details>
+          <summary>Does this predict real-world cracking time?</summary>
+          <p>No. Password Entropy reports a character-pool estimate and strength band. It does not predict real-world cracking time or account for password choice, breach data, hash algorithms, attacker hardware, or rate limits.</p>
+        </details>
+        <details>
           <summary>Is my data private and secure?</summary>
-          <p>Yes. All operations run 100% inside your local web browser runtime using client-side JavaScript. No text, tokens, code, or personal data are ever uploaded to an external server or cloud service.</p>
+          <p>Yes. All operations run 100% inside your local web browser using client-side JavaScript. No text, tokens, code, or personal data are ever uploaded to an external server.</p>
         </details>
         <details>
           <summary>Can I run this tool completely offline?</summary>
-          <p>Yes. You can install the packaged Manifest V3 Chrome Extension version from GitHub or save this standalone HTML page locally to use without an internet connection.</p>
+          <p>Yes. You can install the packaged Manifest V3 Chrome Extension version or save this standalone HTML page locally to use without an internet connection.</p>
         </details>
         <details>
           <summary>Is this tool free and open source?</summary>
-          <p>Yes, all tools are 100% free and licensed under the permissive MIT license. If this tool helped you solve an annoyance, you can support development at <a href="https://ko-fi.com/jju1s" target="_blank" rel="noopener noreferrer">ko-fi.com/jju1s</a>.</p>
+          <p>Yes. The project is free, open source, and licensed under the MIT license. If this tool helped you solve an annoyance, you can support development at <a href="https://ko-fi.com/jju1s" target="_blank" rel="noopener noreferrer">ko-fi.com/jju1s</a>.</p>
         </details>
       </div>
     </div>
@@ -197,7 +222,7 @@
 const sample = 'river-glass-orbit-maple';
 const inputEl = document.getElementById('input'), outputEl = document.getElementById('output');
 const statsEl = document.getElementById('output-stats') || document.getElementById('stats');
-function process() { const result = PasswordEntropy.analyze(inputEl.value); outputEl.value = JSON.stringify(result, null, 2); if (statsEl) statsEl.textContent = 'Upper bound: ' + result.upperBoundBits + ' bits; ' + result.assessment; }
+function process() { const result = PasswordEntropy.analyze(inputEl.value); outputEl.value = JSON.stringify(result, null, 2); if (statsEl) statsEl.textContent = result.strength + ': ' + result.entropyBits + ' bits' + (result.warnings.length && result.strength !== 'Empty' ? '; pattern warning' : ''); }
 document.getElementById('btn-run').addEventListener('click', process); inputEl.addEventListener('input', process);
 document.getElementById('btn-sample').addEventListener('click', function () { inputEl.value = sample; process(); });
 document.getElementById('btn-copy').addEventListener('click', function () { navigator.clipboard.writeText(outputEl.value); });

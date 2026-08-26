@@ -8,9 +8,22 @@ const index = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 const readme = fs.readFileSync(path.join(__dirname, 'README.md'), 'utf8');
 const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'extension', 'manifest.json'), 'utf8'));
 const popup = fs.readFileSync(path.join(__dirname, 'extension', 'popup.html'), 'utf8');
+const pageDescription = 'Calculate a character-pool password entropy estimate in bits from length and character variety, with strength bands. Runs locally and does not predict real-world cracking time.';
+const structuredData = [...index.matchAll(/<script type=["']application\/ld\+json["']>\s*([\s\S]*?)\s*<\/script>/gi)]
+  .map((match) => JSON.parse(match[1]));
+const webApplication = structuredData.find((item) => item['@type'] === 'WebApplication');
+const faqPage = structuredData.find((item) => item['@type'] === 'FAQPage');
 
 assert.ok(index.includes('https://cig13zs.github.io/' + slug + '/'), 'page metadata uses this repository URL');
 assert.ok(readme.includes('github.com/cig13zs/' + slug) || readme.includes('cig13zs.github.io/' + slug), 'README points to this repository');
+assert.ok(index.includes('content="' + pageDescription + '"'), 'page description matches the product claim');
+assert.strictEqual(webApplication.description, pageDescription, 'WebApplication structured data matches the page description');
+assert.ok(readme.includes('does not predict real-world cracking time'), 'README disclaims crack-time predictions');
+assert.ok(!/estimate brute-force cracking time/i.test(index + readme + JSON.stringify(manifest)), 'public copy has no brute-force time estimate');
+assert.ok(!/crack time estimator/i.test(index + readme + JSON.stringify(manifest)), 'public copy has no crack-time estimator claim');
+for (const question of faqPage.mainEntity) {
+  assert.ok(index.includes('<summary>' + question.name + '</summary>'), 'FAQ structured data matches visible question: ' + question.name);
+}
 assert.ok(new RegExp('<title>[^<]*' + escapeRegExp(manifest.action.default_title), 'i').test(popup), 'popup title matches the manifest');
 assert.strictEqual(findInlineScripts(popup).length, 0, 'extension popup has no inline JavaScript');
 assert.strictEqual(findUnsafeBlankLinks(index).length, 0, 'page blank-target links use noopener');
